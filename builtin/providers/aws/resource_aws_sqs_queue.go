@@ -34,6 +34,9 @@ func resourceAwsSqsQueue() *schema.Resource {
 		Read:   resourceAwsSqsQueueRead,
 		Update: resourceAwsSqsQueueUpdate,
 		Delete: resourceAwsSqsQueueDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
