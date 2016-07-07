@@ -69,6 +69,7 @@ func Funcs() map[string]ast.Function {
 		"join":         interpolationFuncJoin(),
 		"jsonencode":   interpolationFuncJSONEncode(),
 		"length":       interpolationFuncLength(),
+		"list":         interpolationFuncList(),
 		"lower":        interpolationFuncLower(),
 		"md5":          interpolationFuncMd5(),
 		"uuid":         interpolationFuncUUID(),
@@ -80,6 +81,32 @@ func Funcs() map[string]ast.Function {
 		"split":        interpolationFuncSplit(),
 		"trimspace":    interpolationFuncTrimSpace(),
 		"upper":        interpolationFuncUpper(),
+	}
+}
+
+// interpolationFuncList creates a list from the parameters passed
+// to it.
+func interpolationFuncList() ast.Function {
+	return ast.Function{
+		ArgTypes: []ast.Type{},
+		ReturnType: ast.TypeList,
+		Variadic: true,
+		VariadicType: ast.TypeString,
+		Callback: func(args []interface{}) (interface{}, error) {
+			// TODO(jen20): assuming we want to proceed, make the error message better and
+			//              potentially make this work with more than just strings
+			var outputList []string
+
+			for _, val := range args {
+				if strVal, ok := val.(string); ok {
+					outputList = append(outputList, strVal)
+				} else {
+					return nil, fmt.Errorf("arguments to list() must be of type string")
+				}
+			}
+
+			return stringSliceToVariableValue(outputList), nil
+		},
 	}
 }
 
